@@ -1,0 +1,82 @@
+// Prisma Schema para Sistema Lava Car
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Cliente {
+  id         Int       @id @default(autoincrement())
+  nome       String
+  placa      String    @unique
+  telefone   String?
+  lavagens   Lavagem[]
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  @@index([placa])
+  @@index([nome])
+}
+
+model Lavagem {
+  id              Int      @id @default(autoincrement())
+  cliente         Cliente  @relation(fields: [clienteId], references: [id], onDelete: Cascade)
+  clienteId       Int
+  data            DateTime @default(now())
+  valor           Float
+  formaPagamento  String   // 'dinheiro' | 'pix' | 'cartao'
+  observacao      String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([data])
+  @@index([clienteId])
+  @@index([formaPagamento])
+}
+
+model Backup {
+  id            Int      @id @default(autoincrement())
+  filename      String
+  googleDriveId String?
+  size          Int
+  createdAt     DateTime @default(now())
+}
+
+model Despesa {
+  id              Int      @id @default(autoincrement())
+  data            DateTime @default(now())
+  tipo            String   // 'funcionario' | 'produto' | 'marmita' | 'aluguel' | 'conta' | 'outro'
+  descricao       String   // Descrição da despesa
+  valor           Float    // Valor da despesa
+  observacao      String?  // Observações
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([data])
+  @@index([tipo])
+}
+
+model FechamentoDiario {
+  id                 Int      @id @default(autoincrement())
+  data               DateTime @unique  // Data do fechamento
+  totalLavagens      Int                // Quantidade de lavagens
+  receitaTotal       Float              // Receita total do dia
+  receitaDinheiro    Float              // Receita em dinheiro
+  receitaPix         Float              // Receita em PIX
+  receitaCartao      Float              // Receita em cartão
+  despesaTotal       Float              // Total de despesas
+  despesaFuncionario Float              // Despesa com funcionários
+  despesaProduto     Float              // Despesa com produtos
+  despesaMarmita     Float              // Despesa com marmitas
+  despesaOutros      Float              // Outras despesas
+  lucroLiquido       Float              // Lucro do dia (receita - despesas)
+  observacao         String?            // Observações do dia
+  encerradoPor       String?            // Quem encerrou (futuro)
+  createdAt          DateTime @default(now())
+
+  @@index([data])
+}
