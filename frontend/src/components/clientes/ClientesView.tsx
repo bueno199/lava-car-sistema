@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import {
   Users,
   Search,
@@ -8,8 +8,6 @@ import {
   Car,
   Phone,
   Calendar,
-  DollarSign,
-  TrendingUp,
   X,
 } from 'lucide-react';
 import {

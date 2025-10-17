@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import {
   Calendar,
-  DollarSign,
   TrendingUp,
   Save,
   Clock,
